@@ -57,11 +57,15 @@ export const inject: string[] = []
 export function apply(ctx: { effect: (cb: () => () => void) => void }): void {
   ctx.effect(() => {
     ensureStyle()
-    let installed = false
+    // 每次扫描都要给所有当前存在的设置对话框打标 + 装事件。install() 内部用
+    // data-dsh-settings-panel 属性防重复，所以同一个 dialog 不会装两次；而
+    // 设置对话框关闭后被移除、再次打开会创建新的 dialog，必须重新扫描，
+    // 否则第二次打开就恢复原始布局。因此这里不做一次性 installed 标志，
+    // 而是让 MutationObserver 持续监听并在每次变更后重扫。
     const tryInstall = (): void => {
-      if (installed) return
-      const target = Array.from(document.querySelectorAll('[role="dialog"]')).find(isSettingsDialog) ?? null
-      if (target !== null) { install(target); installed = true }
+      Array.from(document.querySelectorAll('[role="dialog"]')).forEach((el) => {
+        if (isSettingsDialog(el)) install(el)
+      })
     }
     tryInstall()
     const observer = new MutationObserver(() => tryInstall())
