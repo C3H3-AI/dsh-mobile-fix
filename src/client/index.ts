@@ -7,6 +7,9 @@ const SETTINGS_MARKER = 'data-dsh-settings-panel'
 const MAX_MARKER = 'data-dsh-settings-max'
 
 const STYLE = `
+/* Left DSH sidebar (better-sidebar hHd-Xa root): when collapsed, show only the top logo toggle, hide other rail icons. Clicking the logo expands the full sidebar. Does not touch the right better-sidebar. */
+[class*="hHd-Xa_root"][class*="collapsed"] > [class*="hHd-Xa_logoRow"] ~ * { display: none !important; }
+
 [data-dsh-settings-panel] { position: relative; transition: width 160ms ease, height 160ms ease, max-width 160ms ease, max-height 160ms ease, border-radius 160ms ease; }
 [data-dsh-settings-panel][data-dsh-settings-max] { position: fixed !important; inset: 0 !important; width: 100vw !important; max-width: 100vw !important; height: 100dvh !important; max-height: 100dvh !important; border-radius: 0 !important; }
 @media (max-width: 768px) {
